@@ -1,0 +1,28 @@
+#!/bin/bash
+
+while sleep 3; do
+
+
+{ echo "ip addr"; sleep 2; } | telnet 192.168.8.1 > /root/cip/hasilinet
+cat /root/cip/hasilinet | grep wan0 | awk 'NR==3' | cut -b 10-15 > /root/cip/ipmodem
+
+
+rip=$(cat /root/cip/ipmodem)
+c0=$(cat /root/cip/ipmodem | cut -b 4)
+c1=$(cat /root/cip/ipmodem | cut -b 5)
+c2=$(cat /root/cip/ipmodem | cut -b 6)
+
+echo -e "ip saat ini adlah $rip"
+
+if [[ $rip == 10.$c0$c1. ]]; then
+echo -e "ip 10.xx ,melakukan reboot modem"
+sleep 2
+{ echo "reboot"; sleep 2; } | telnet 192.168.8.1
+sleep 15
+
+else
+echo -e "ip 10.xxx ,melakukan checking ulang ....."
+
+fi
+
+done
